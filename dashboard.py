@@ -92,34 +92,7 @@ col3.success("**Worldwide : {}**".format(world_recd))
 
 st.markdown("")
 
-# Plotting the choropleth plot for the world reprsenting the latest "hot spots" for the confirmed cases
 
-@st.experimental_memo
-def plot_world_graph(conf):
-    daily_cases = conf.iloc[:, -1] - conf.iloc[:, -2]
-    conf["Daily Cases"] = daily_cases
-    list_countries = conf['Country/Region'].unique().tolist()
-    d_country_code = {}  
-
-    for country in list_countries:
-        try:
-            country_data = pycountry.countries.search_fuzzy(country)
-            country_code = country_data[0].alpha_3
-            d_country_code.update({country: country_code})
-        except:
-            d_country_code.update({country: ' '})
-
-    for k, v in d_country_code.items():
-        conf.loc[(conf["Country/Region"] == k), 'iso_alpha'] = v
-
-    fig = px.choropleth(conf, locations="iso_alpha", color="Daily Cases", hover_name="Country/Region", color_continuous_scale=px.colors.sequential.Teal)
-    fig.update_layout(title = "<b>COVID-19 Hotspots</b>", title_x = 0.5, plot_bgcolor = '#00172b', paper_bgcolor = '#00172b', height = 550, width = 750)
-
-    conf = conf.drop(columns = ["Daily Cases", "iso_alpha"])
-    return fig
-
-fig1 = plot_world_graph(copy.deepcopy(conf))
-st.plotly_chart(fig1, use_container_width = True)
 
 # Plotting the pie chart for Confirmed cases, Deaths & Recoveries Worldwide
 
